@@ -1,7 +1,10 @@
 DROP TABLE IF EXISTS STOCKS;
 CREATE TABLE STOCKS(
-    code varchar(6),
-    name nvarchar(20),
+    match_id integer,
+    user_id integer,
+    votes_count integer,
+    stock_code varchar(6),
+    stock_name nvarchar(20),
     buying_price DECIMAL(6,2),
     buying_at integer,
 );

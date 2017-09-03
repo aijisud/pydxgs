@@ -102,3 +102,4 @@ ENV/
 
 # config file
 c.conf
+mail.conf

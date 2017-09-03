@@ -5,7 +5,7 @@ import time
 import sqlite3
 
 
-CONFIG = "data/c.conf"
+CONFIG = "c.conf"
 INIT_DB_SQL = "dbscripts/init_db.sql"
 
 c = configparser.ConfigParser()
@@ -16,7 +16,23 @@ DB_FILENAME = c.get("db", "db_file")
 CONN = None
 MAX_RETRIES = 3
 
-SQL_INSERT = "INSERT INTO STOCKS (code, name, buying_price, buying_at) VALUES (?, ?, ?, ?)"
+SQL_INSERT = "INSERT INTO STOCKS (match_id, user_id, votes_count, stock_code, stock_name, buying_price, buying_at)\
+              VALUES (?, ?, ?, ?, ?, ?, ?)"
+
+SQL_EXISTS = "SELECT count(*) from STOCKS WHERE user_id = ?"
+
+SQL_STATISTICS = "SELECT sum(1) as buying_count, \
+                    sum(votes_count) as votes_count, \
+                    stock_code, \
+                    stock_name, \
+                    avg(buying_price) as buying_price, \
+               FROM STOCKS \
+              GROUP BY stock_code, stock_name"
+"""
+有%s人买了，%s人关注，股票[%s][%s]，均价%s
+select "A"||ID AS MyStr from table1;
+"""
+
 
 def connect_db():
     if CONN == None:
@@ -29,11 +45,12 @@ def create_table_once():
     CONN.executescript(INIT_DB_SQL);
     CONN.commit()
 
-def insert_one(code, name, buying_price, buying_at):
-    t = (code, name, buying_price, buying_at)
+def __insert_one(match_id, user_id, votes_count, stock_code, stock_name, buying_price, buying_at):
+    t = (match_id, user_id, votes_count, stock_code, stock_name, buying_price, buying_at)
     connect_db();
-    CONN.execute(SQL_INSERT, t);
-    CONN.commit()
+    if CONN.execute(SQL_EXISTS, t) > = 1:
+        CONN.execute(SQL_INSERT, t);
+    return True
 
 def insert_bulk(l):
     connect_db();
@@ -42,7 +59,16 @@ def insert_bulk(l):
     CONN.commit()
 
 def get_statistics():
+    #SQL_STATISTICS
     return
 
 def close_conn():
     CONN.close()
+
+
+
+
+
+
+
+#end
