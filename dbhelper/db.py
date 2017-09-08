@@ -16,8 +16,10 @@ DB_FILENAME = c.get("db", "db_file")
 CONN = None
 MAX_RETRIES = 3
 
-SQL_INSERT = "INSERT INTO STOCKS (match_id, user_id, votes_count, stock_code, stock_name, buying_price, buying_at)\
-              VALUES (?, ?, ?, ?, ?, ?, ?)"
+SQL_INSERT = "INSERT INTO STOCKS (id, user_id, user_name, votes_count, stock_code, stock_name, \
+              stock_buying_price, stock_buying_at_str, stock_buying_at, stock_best_increase_percentage) \
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+
 
 SQL_EXISTS = "SELECT count(*) from STOCKS WHERE user_id = ?"
 
